@@ -1,0 +1,21 @@
+{
+  "origen": "Carta de muestra · Caso académico",
+  "fecha": "2026-11-09",
+  "platos": [
+    {"id":"chaufa-pollo","nombre":"Arroz chaufa de pollo","categoria":"Arroces","precio":2490,"personas":1,"descripcion":"Arroz frito al wok con pollo, huevo y verduras.","ingredientes":["arroz","pollo","huevo","cebolla china","verduras","sillao"],"foto":"chaufa"},
+    {"id":"tallarin-pollo","nombre":"Tallarín saltado de pollo","categoria":"Tallarines","precio":2590,"personas":1,"descripcion":"Tallarines salteados con pollo, tomate y cebolla.","ingredientes":["tallarines de trigo","pollo","tomate","cebolla","sillao"],"foto":"tallarin"},
+    {"id":"lomo","nombre":"Lomo saltado","categoria":"Carnes","precio":2790,"personas":1,"descripcion":"Trozos de carne salteados con cebolla, tomate y papas.","ingredientes":["carne de res","cebolla","tomate","papas","arroz","sillao"],"foto":"lomo"},
+    {"id":"tipakay","nombre":"Pollo tipakay","categoria":"Pollo","precio":2690,"personas":1,"descripcion":"Pollo en trozos con una salsa dulce y verduras.","ingredientes":["pollo","harina de trigo","pimiento","piña","salsa tipakay"],"foto":"tipakay"},
+    {"id":"chaufa-mariscos","nombre":"Arroz chaufa de mariscos","categoria":"Arroces","precio":2990,"personas":1,"descripcion":"Arroz salteado al wok con langostinos y calamar.","ingredientes":["arroz","langostinos","calamar","huevo","sillao"],"foto":""},
+    {"id":"tofu","nombre":"Tofu con verduras al wok","categoria":"Vegetales","precio":2290,"personas":1,"descripcion":"Tofu, brócoli y zanahoria salteados con arroz.","ingredientes":["tofu de soya","brócoli","zanahoria","arroz","sillao"],"foto":""},
+    {"id":"duo","nombre":"Dúo de chaufa y pollo tipakay","categoria":"Para compartir","precio":4590,"personas":2,"descripcion":"Arroz chaufa de pollo y pollo en salsa dulce para compartir.","ingredientes":["arroz","pollo","huevo","cebolla china","harina de trigo","sillao","salsa tipakay"],"foto":""},
+    {"id":"familiar","nombre":"Banquete familiar de pollo","categoria":"Para compartir","precio":8790,"personas":4,"descripcion":"Chaufa de pollo, tallarín de pollo y pollo tipakay para cuatro.","ingredientes":["arroz","tallarines de trigo","pollo","huevo","cebolla china","sillao","salsa tipakay"],"foto":""}
+  ],
+  "preguntas": [
+    {"id":"oferta","consulta":"qué venden aquí qué cosas comida qué ofrecen qué se puede pedir qué tienen carta menú chifa platos opciones tipos de comida especialidades","texto":"Esta app incluye una carta local de muestra con Arroz chaufa de pollo, Tallarín saltado de pollo, Lomo saltado, Pollo tipakay, Arroz chaufa de mariscos, Tofu con verduras al wok y opciones para compartir.","ejemplos":"arroz chaufa de pollo, tallarín saltado de pollo, lomo saltado, pollo tipakay, arroz chaufa de mariscos, tofu con verduras al wok y opciones para compartir","fecha":"2026-11-09"},
+    {"id":"ceviche","consulta":"ceviche cebiche seviche venden hay sirven ofrecen tienen preparan pescado mariscos","texto":"El ceviche no aparece en la carta de muestra de esta app. Si buscas un plato con mariscos, puedes probar el arroz chaufa de mariscos del catálogo.","fecha":"2026-11-09"},
+    {"id":"locales","consulta":"horario horarios hora horas apertura abre abren cierre cierra cierran local locales tienda dirección cerca sucursales abierto domingo ubicación","texto":"Esta app no incluye buscador de locales ni horarios. Puedo mostrarte la carta o ayudarte con las funciones disponibles aquí.","fecha":"2026-11-09"},
+    {"id":"delivery","consulta":"delivery reparto envío envíos entrega domicilio retiro recoger recogerlo","texto":"Esta app no tiene delivery integrado; el pedido disponible aquí es simulado. Puedo ayudarte a elegir platos del catálogo.","fecha":"2026-11-09"},
+    {"id":"promociones","consulta":"promociones promoción ofertas descuento cupón descuentos","texto":"Esta app no incluye promociones vigentes. Puedo mostrarte los platos y precios de muestra disponibles en el catálogo local.","fecha":"2026-11-09"}
+  ]
+}
