@@ -33,6 +33,7 @@ class PruebasVozLive(unittest.TestCase):
                 "recommend_menu",
                 "add_menu_dish",
                 "add_customized_dish",
+                "update_order_quantity",
             },
         )
 

@@ -19,7 +19,7 @@ from belen import (
 from ia import Inteligencia
 from pedido_demo import (
     EXTRAS, NIVELES_PICANTE, PRECIO_PERSONALIZADO, agregar_personalizado,
-    agregar_plato, cantidad_pedido, mostrar_pedido, resumen_pedido, total_pedido,
+    actualizar_cantidad, agregar_plato, cantidad_pedido, mostrar_pedido, resumen_pedido, total_pedido,
 )
 from voz_live import (
     ErrorLiveAPI, MODELO_LIVE, crear_configuracion_websocket, crear_token_live,
@@ -396,9 +396,17 @@ def mostrar_platos_sugeridos(espacio):
     with espacio.container():
         with st.container(key="platos_sugeridos"):
             st.html('<p class="eyebrow">PLATOS MENCIONADOS</p>')
-            for clave in platos:
-                st.button(PLATOS[clave]["nombre"], icon=":material/arrow_forward:",
-                          on_click=abrir_detalle, args=(clave,), key=f"chat_plato_{clave}")
+            columnas = st.columns(min(len(platos), 3), gap="small")
+            for columna, clave in zip(columnas, platos):
+                plato = PLATOS[clave]
+                with columna:
+                    st.html(
+                        f'{foto(clave)}<p><strong>{escape(plato["nombre"])}</strong><br>'
+                        f'<small>{escape(plato["descripcion"])}</small></p>'
+                    )
+                    st.button("Ver detalles", icon=":material/arrow_forward:",
+                              on_click=abrir_detalle, args=(clave,), key=f"chat_plato_{clave}",
+                              width="stretch")
 
 
 def guardar_respuesta(pregunta, respuesta, milisegundos):
@@ -605,18 +613,42 @@ def ejecutar_accion_live(nombre, argumentos):
             f"El total ilustrativo actual es {soles(total_pedido())}. No se confirmó ni pagó."
         )
     if nombre == "add_customized_dish":
-        if S.vista != "Crear" or S.paso < len(PASOS) or not S.combinacion.get("Base"):
-            return "El plato aún está incompleto. Completemos las etapas visibles antes de agregarlo."
-        if not agregar_personalizado(S.combinacion):
+        cantidad = argumentos.get("quantity", 1)
+        if type(cantidad) is not int or not 1 <= cantidad <= 99:
+            return "Indica una cantidad entre 1 y 99 para actualizar el pedido."
+        combinacion = S.combinacion if (
+            S.vista == "Crear" and S.paso >= len(PASOS) and S.combinacion.get("Base")
+        ) else S.get("ultima_combinacion_personalizada")
+        if not combinacion:
+            return "El plato aún está incompleto y no hay una combinación anterior para repetir."
+        if not agregar_personalizado(combinacion, cantidad):
             return "No pude agregar la combinación. Revisa que tenga una base seleccionada."
+        S.ultima_combinacion_personalizada = {
+            clave: valor[:] if isinstance(valor, list) else valor
+            for clave, valor in combinacion.items()
+        }
         S.combinacion = {}
         S.paso = 0
         etiqueta, pregunta, opciones = PASOS[S.paso]
         return (
-            f"Agregué una combinación personalizada al pedido local. El total ilustrativo es "
+            f"Agregué {cantidad} combinación(es) personalizada(s) al pedido local. El total ilustrativo es "
             f"{soles(total_pedido())}. Si quieres armar otro plato, empezamos con {etiqueta}: "
             f"{', '.join(opciones)}. También puedes abrir tu pedido."
         )
+    if nombre == "update_order_quantity":
+        clave = argumentos.get("dish_id")
+        cantidad = argumentos.get("quantity")
+        if (
+            not isinstance(clave, str)
+            or clave not in (*PLATOS, "creado")
+            or type(cantidad) is not int
+            or not 0 <= cantidad <= 99
+        ):
+            return "Indica el identificador del plato y una cantidad entre 0 y 99."
+        if not actualizar_cantidad(clave, cantidad):
+            return "No encontré ese plato en el pedido actual. Puedes agregarlo primero."
+        accion = "Quité" if cantidad == 0 else "Actualicé"
+        return f"{accion} {clave}; ahora hay {cantidad} unidad(es). El total ilustrativo es {soles(total_pedido())}."
     return "No reconozco esa acción dentro de China Wok AI."
 
 
@@ -639,7 +671,9 @@ def procesar_consulta_pendiente():
         guardar_respuesta(pregunta, eleccion, 0)
         st.rerun()
 
-    destino = destino_navegacion(pregunta)
+    # Las consultas escritas sobre la carta deben resolverse en el hilo. La voz
+    # conserva la navegación por acciones para no interrumpir la llamada.
+    destino = destino_navegacion(pregunta) if S.get("llamada_activa") else None
     if destino:
         pagina, plato = destino
         if pagina == "Menú":

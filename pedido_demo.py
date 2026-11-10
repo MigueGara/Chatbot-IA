@@ -58,9 +58,9 @@ def agregar_plato(clave, cantidad=1, picante="", extras=()):
     return True
 
 
-def agregar_personalizado(combinacion):
+def agregar_personalizado(combinacion, cantidad=1):
     """Agrega una combinación al precio de referencia de la demo."""
-    if not isinstance(combinacion, dict):
+    if not isinstance(combinacion, dict) or type(cantidad) is not int or not 1 <= cantidad <= _MAX_CANTIDAD:
         return False
     base = combinacion.get("Base")
     if not isinstance(base, str) or not base.strip():
@@ -71,7 +71,7 @@ def agregar_personalizado(combinacion):
         valor = combinacion.get(clave)
         opciones = valor if isinstance(valor, (list, tuple)) else (valor,)
         detalle.extend(opcion.strip()[:60] for opcion in opciones if isinstance(opcion, str) and opcion.strip())
-    _agregar(_Linea("creado", "Mi plato personalizado", tuple(detalle), PRECIO_PERSONALIZADO))
+    _agregar(_Linea("creado", "Mi plato personalizado", tuple(detalle), PRECIO_PERSONALIZADO, cantidad))
     return True
 
 
@@ -86,6 +86,7 @@ def cantidad_pedido():
 def resumen_pedido():
     return tuple(
         {
+            "clave": linea.clave,
             "nombre": linea.nombre,
             "cantidad": linea.cantidad,
             "precio_unitario": linea.precio,
@@ -93,6 +94,25 @@ def resumen_pedido():
         }
         for linea in _lineas().values()
     )
+
+
+def actualizar_cantidad(clave, cantidad):
+    """Establece la cantidad de una línea del pedido; cero elimina la línea."""
+    if not isinstance(clave, str) or type(cantidad) is not int or not 0 <= cantidad <= _MAX_CANTIDAD:
+        return False
+    lineas = _lineas()
+    identificador = next(
+        (identificador for identificador, linea in lineas.items() if linea.clave == clave),
+        None,
+    )
+    if identificador is None:
+        return False
+    if cantidad == 0:
+        del lineas[identificador]
+    else:
+        lineas[identificador] = replace(lineas[identificador], cantidad=cantidad)
+    _editar()
+    return True
 
 
 def _cambiar_cantidad(identificador, cambio):

@@ -679,7 +679,7 @@ function crearInstancia(parentElement) {
         } else {
           enviarContextoApp();
         }
-      } else if (datos.modo === "llamada") {
+      } else if (datos.modo === "llamada" && datos.live_error) {
         if (liveSocket || contextoAudio) {
           liveFallido = true;
           if (liveSocket && liveSocket.readyState < WebSocket.CLOSING) liveSocket.close();
@@ -694,10 +694,11 @@ function crearInstancia(parentElement) {
         liveTokenAnterior = undefined;
         if (!esperandoRespuesta && !errorMicrofono) iniciarEscuchaAutomatica();
       }
-      if (!datos.live_token && (nuevoTurno || primerRender || inicioLlamada) && auto &&
+      if (!datos.live_token && datos.live_error &&
+          (nuevoTurno || primerRender || inicioLlamada) && auto &&
           datos.respuesta && datos.gesto !== "pensando") {
         leer();
-      } else if (!datos.live_token && datos.modo === "llamada" &&
+      } else if (!datos.live_token && datos.live_error && datos.modo === "llamada" &&
                  !esperandoRespuesta && datos.gesto !== "pensando") {
         iniciarEscuchaAutomatica();
       }

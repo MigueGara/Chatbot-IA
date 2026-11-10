@@ -83,10 +83,30 @@ DECLARACIONES = [
     {
         "name": "add_customized_dish",
         "description": (
-            "Agrega al carrito el plato personalizado que ya está completo en el creador. "
-            "Solo úsala si existe una base seleccionada; nunca añade un plato incompleto."
+            "Agrega al carrito el plato personalizado actual o repite el último plato personalizado "
+            "que se agregó. Usa quantity para agregar varias unidades en una sola acción; no obligues "
+            "a la persona a repetir el proceso uno por uno."
         ),
-        "parameters": {"type": "OBJECT", "properties": {}},
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {"quantity": {"type": "INTEGER"}},
+        },
+    },
+    {
+        "name": "update_order_quantity",
+        "description": (
+            "Actualiza la cantidad de cualquier plato que ya esté en el pedido. Usa quantity como "
+            "cantidad final; usa 0 para quitarlo. Sirve para agregar o disminuir unidades sin repetir "
+            "la personalización."
+        ),
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "dish_id": {"type": "STRING"},
+                "quantity": {"type": "INTEGER"},
+            },
+            "required": ["dish_id", "quantity"],
+        },
     },
 ]
 
@@ -105,7 +125,7 @@ Carta local:
 {carta}
 
 Cuando la persona quiera navegar, usa navigate_screen para abrir la pantalla real antes de decir que ya la abriste. Si pide personalizar su plato, abre customizer; el creador mostrará las opciones y la persona puede elegirlas hablando o tocando la pantalla. Cuando mencione una opción válida de la etapa actual, usa select_custom_options; no afirmes que la seleccionaste hasta recibir confirmación.
-Antes de recomendar con precios según grupo y presupuesto, confirma ambos datos y usa recommend_menu. Si la persona elige un plato de la carta y pide agregarlo, usa add_menu_dish. Si termina de personalizar una combinación y pide añadirla, usa add_customized_dish; puede repetir el proceso para incluir varios platos distintos. Al recomendar un plato, puedes abrir la carta usando navigate_screen con screen=menu. Antes de entrar al pedido, acompaña la elección; al llegar al pedido, explica con amabilidad que la confirmación final y el pago los realiza la persona, no tú. No completes ni afirmes pagos.
+Antes de recomendar con precios según grupo y presupuesto, confirma ambos datos y usa recommend_menu. Si la persona elige un plato de la carta y pide agregarlo, usa add_menu_dish. Si termina de personalizar una combinación y pide añadirla, usa add_customized_dish. Si pide otra unidad o varias unidades de la misma combinación, vuelve a usar add_customized_dish con quantity; no le digas que debe repetir el proceso uno por uno. Para aumentar, disminuir o quitar cualquier línea ya agregada, usa update_order_quantity con la cantidad final y el identificador del pedido. Al recomendar un plato, puedes abrir la carta usando navigate_screen con screen=menu. Antes de entrar al pedido, acompaña la elección; al llegar al pedido, explica con amabilidad que la confirmación final y el pago los realiza la persona, no tú. No completes ni afirmes pagos.
 Usa el contexto actual de la app para no perder la pantalla, las opciones seleccionadas ni el contenido del carrito. Si una alternativa no alcanza para todo el grupo o supera el presupuesto, dilo con claridad y ofrece una opción realista; no inventes precios ni disponibilidad. La app solo guarda un pedido de muestra local.
 Si no entiendes una opción o no aparece en la carta, pregunta o aclara en lugar de adivinar. No repitas respuestas largas ni menciones que eres un modelo."""
 
